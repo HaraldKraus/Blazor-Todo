@@ -1,0 +1,109 @@
+﻿@page "/todo"
+@rendermode InteractiveServer
+
+<h3>Todo</h3>
+
+@if(fehlermeldung != string.Empty)
+{
+    <div class="row">
+        <Alert Color="AlertColor.Danger">@fehlermeldung</Alert>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-5 pt-4">
+        <div class="border rounded p-4">
+            <EditForm Model="@meineAufgabe" OnValidSubmit="AufgabeHinzufuegen">
+                <DataAnnotationsValidator />
+                <ValidationSummary /> 
+
+                <div class="form-group row mb-3">
+                    <label class="col-sm-3 col-form-label" for="name">Name:</label>
+                    <div class="col-sm-9">
+                        <InputText id="name" @bind-Value="meineAufgabe.Name" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    <label class="col-sm-3 col-form-label" for="prio">Priorität:</label>
+                    <div class="col-sm-9">
+                        <select class="form-select" id="prio" name="prio" @bind="meineAufgabe.Prioritaet">
+                            <option value="2">High</option>
+                            <option value="1">Medium</option>
+                            <option value="0">Low</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" type="submit">Hinzufügen</button>
+
+            </EditForm>
+        </div>
+    </div>
+
+    <div class="col-md-1 pt-4"></div>
+
+    <div class="col-md-6 pt-4">
+        <div class="border rounded p-4">
+            <table class="table table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Priorität</th>
+                        <th>Aktion</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach(Aufgabe tmpAufgabe in this.aufgabenListe)
+                    {
+                        <tr>
+                            <td class="align-middle">@tmpAufgabe.Name</td>
+                            <td class="align-middle">@tmpAufgabe.schoenePrio()</td>
+                            <td>                                
+                                <Tooltip Title="Aufgabe löschen" role="button">                                    
+                                    <Icon @onclick="() => DeleteAufgabe(tmpAufgabe)" Name="IconName.Backspace" Size="IconSize.x6" Color="IconColor.Danger" />
+                                </Tooltip>                              
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@inject DataService myDataService
+
+@code {
+    Aufgabe meineAufgabe;
+    List<Aufgabe> aufgabenListe;
+    string fehlermeldung = string.Empty;
+
+    // Das wird immer ausgeführt wenn die Seite geladen wird
+    protected override async Task OnInitializedAsync()
+    {
+        this.meineAufgabe = new Aufgabe();
+        this.aufgabenListe = myDataService.GetAufgaben();
+    }
+
+    private void AufgabeHinzufuegen()
+    {
+        if (myDataService.AddAufgabe(this.meineAufgabe))
+        {
+            this.meineAufgabe = new Aufgabe();
+            this.aufgabenListe = myDataService.GetAufgaben();
+            fehlermeldung = string.Empty;
+        }
+        else
+        {
+            fehlermeldung = "Diese Aufgabe gibt es bereits.";
+        }
+    }
+
+    private void DeleteAufgabe(Aufgabe toDeleteAufgabe)
+    {
+        myDataService.DeleteAufgabe(toDeleteAufgabe);
+        this.aufgabenListe = myDataService.GetAufgaben();
+    }
+}
