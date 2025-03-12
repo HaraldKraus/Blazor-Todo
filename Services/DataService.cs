@@ -31,7 +31,13 @@ namespace TestBlazorAPP.Services
 
         public bool AddAufgabe(Aufgabe aufgabe)
         {
-            
+            AppDBContext dbConnection = this._dbContextFactory.CreateDbContext();
+
+            dbConnection.Aufgabe.Add(aufgabe);
+            dbConnection.SaveChanges();
+
+            return true;
+            /*
             if (aufgabenListe.Where(t => t.Name == aufgabe.Name).Count() == 0)
             {
                 this.aufgabenListe.Add(aufgabe);
@@ -41,6 +47,7 @@ namespace TestBlazorAPP.Services
             {
                 return false;
             }
+            */
         }
 
         public void DeleteAufgabe(Aufgabe aufgabe)

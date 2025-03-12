@@ -20,7 +20,8 @@ namespace TestBlazorAPP
 
             // DB Verbindung
             builder.Services.AddDbContextFactory<AppDBContext>(options =>
-                options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnectionString")));
+                //options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnectionString")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("AzureConnectionString")));
 
             // Add services to the container.
             builder.Services.AddRazorComponents()
