@@ -10,6 +10,7 @@ namespace TestBlazorAPP.Models
         
         public string Name { get; set; } = string.Empty;
         public int Prioritaet { get; set; } = 1;
+        public bool Geloescht { get; set; } = false;
 
         public string schoenePrio()
         {

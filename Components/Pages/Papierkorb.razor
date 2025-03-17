@@ -1,0 +1,59 @@
+﻿@page "/papierkorb"
+@rendermode InteractiveServer
+
+<div class="row">
+    <div class="col">
+        <h3>Papierkorb</h3>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col pt-4">
+        <!-- Tabelle des Papierkorbes -->
+        <div class="border rounded p-4">
+            <table class="table table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Priorität</th>
+                        <th>Aktion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(Aufgabe myAufgabe in aufgabenListe)
+                    {
+                        <tr>
+                            <td>@myAufgabe.Name</td>
+                            <td>@myAufgabe.schoenePrio()</td>
+                            <td>
+                                <Tooltip Title="Aufgabe wiederherstellen" role="button">
+                                    <Icon @onclick="() => RestoreAufgabe(myAufgabe)" Name="IconName.BoxArrowInUp" Size="IconSize.x6" Color="IconColor.Success" />
+                                </Tooltip>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@inject DataService myDataService
+
+@code {
+
+    List<Aufgabe> aufgabenListe;
+
+    // Das wird immer ausgeführt wenn die Seite geladen wird
+    protected override async Task OnInitializedAsync()
+    {
+        this.aufgabenListe = myDataService.GetGeloeschteAufgaben();
+    }
+
+    private void RestoreAufgabe(Aufgabe myAufgabe)
+    {
+        myDataService.RestoreAufgabe(myAufgabe);
+        this.aufgabenListe = myDataService.GetGeloeschteAufgaben();
+    }
+}

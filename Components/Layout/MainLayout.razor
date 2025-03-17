@@ -1,9 +1,11 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<div class="bb-page">
+    
+    <Sidebar Href="/"
+             IconName="IconName.CardChecklist"
+             Title="4CK Aufgaben"
+             DataProvider="SidebarDataProvider" />
 
     <main>
         <div class="top-row px-4">
@@ -21,3 +23,24 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code{
+    IEnumerable<NavItem>? navItems;
+
+    private async Task<SidebarDataProviderResult> SidebarDataProvider(SidebarDataProviderRequest request)
+    {
+        navItems = GetNavItemsUser();
+        return await Task.FromResult(request.ApplyTo(navItems));
+    }
+
+    private IEnumerable<NavItem> GetNavItemsUser()
+    {
+        navItems = new List<NavItem>
+        {
+            new NavItem { Href = "/todo", IconName = IconName.CardChecklist, Text = "Aufgaben"},
+            new NavItem { Href = "/papierkorb", IconName = IconName.Trash, Text = "Mistkübel"},
+        };
+
+        return navItems;
+    }
+}
