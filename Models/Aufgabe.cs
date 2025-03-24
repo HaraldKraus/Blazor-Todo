@@ -12,6 +12,10 @@ namespace TestBlazorAPP.Models
         public int Prioritaet { get; set; } = 1;
         public bool Geloescht { get; set; } = false;
 
+        // Fremdschlüsssel
+        public virtual Bild? Bild { get; set; }
+        public int? BildId { get; set; }
+
         public string schoenePrio()
         {
             switch (Prioritaet)

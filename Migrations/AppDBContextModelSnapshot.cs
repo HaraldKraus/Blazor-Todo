@@ -30,6 +30,9 @@ namespace TestBlazorAPP.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("BildId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("Geloescht")
                         .HasColumnType("bit");
 
@@ -42,6 +45,8 @@ namespace TestBlazorAPP.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BildId");
+
                     b.ToTable("Aufgabe", "ToDo");
 
                     b.HasData(
@@ -52,6 +57,40 @@ namespace TestBlazorAPP.Migrations
                             Name = "Testaufgabe",
                             Prioritaet = 1
                         });
+                });
+
+            modelBuilder.Entity("TestBlazorAPP.Models.Bild", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("Data")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Bild", "ToDo");
+                });
+
+            modelBuilder.Entity("TestBlazorAPP.Models.Aufgabe", b =>
+                {
+                    b.HasOne("TestBlazorAPP.Models.Bild", "Bild")
+                        .WithMany()
+                        .HasForeignKey("BildId");
+
+                    b.Navigation("Bild");
                 });
 #pragma warning restore 612, 618
         }

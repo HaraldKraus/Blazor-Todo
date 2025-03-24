@@ -11,7 +11,7 @@ using TestBlazorAPP.Database;
 namespace TestBlazorAPP.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20250310100113_init")]
+    [Migration("20250324092244_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace TestBlazorAPP.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("ToDo")
-                .HasAnnotation("ProductVersion", "9.0.2")
+                .HasAnnotation("ProductVersion", "9.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -33,6 +33,12 @@ namespace TestBlazorAPP.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("BildId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Geloescht")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -42,15 +48,52 @@ namespace TestBlazorAPP.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BildId");
+
                     b.ToTable("Aufgabe", "ToDo");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
+                            Geloescht = false,
                             Name = "Testaufgabe",
                             Prioritaet = 1
                         });
+                });
+
+            modelBuilder.Entity("TestBlazorAPP.Models.Bild", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("Data")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Bild", "ToDo");
+                });
+
+            modelBuilder.Entity("TestBlazorAPP.Models.Aufgabe", b =>
+                {
+                    b.HasOne("TestBlazorAPP.Models.Bild", "Bild")
+                        .WithMany()
+                        .HasForeignKey("BildId");
+
+                    b.Navigation("Bild");
                 });
 #pragma warning restore 612, 618
         }
