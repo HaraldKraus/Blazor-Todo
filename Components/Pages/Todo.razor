@@ -34,7 +34,14 @@
                         </select>
                     </div>
                 </div>
-
+                <!-- File Upload Start -->
+                <div class="form-group row mb-3">
+                    <label class="col-sm-2 col-form-label form-label" for="image">Bild:</label>
+                    <div class="col-sm-10">
+                        <InputFile class="form-control" id="image" OnChange="HandleFileSelected" />
+                    </div>
+                </div>
+                <!-- File Upload Ende -->
                 <button class="btn btn-primary" type="submit">Hinzufügen</button>
 
             </EditForm>
@@ -60,10 +67,13 @@
                         <tr>
                             <td class="align-middle">@tmpAufgabe.Name</td>
                             <td class="align-middle">@tmpAufgabe.schoenePrio()</td>
-                            <td>                                
+                            <td class="p-3">
+                                <Tooltip Title="Aufgabe betrachten" role="button">
+                                    <Icon @onclick="() => ViewAufgabe(tmpAufgabe)" Name="IconName.EyeFill" Size="IconSize.x6" Color="IconColor.Primary" />
+                                </Tooltip>
                                 <Tooltip Title="Aufgabe löschen" role="button">                                    
                                     <Icon @onclick="() => DeleteAufgabe(tmpAufgabe)" Name="IconName.Backspace" Size="IconSize.x6" Color="IconColor.Danger" />
-                                </Tooltip>                              
+                                </Tooltip>                                
                             </td>
                         </tr>
                     }
@@ -74,10 +84,13 @@
 </div>
 
 @inject DataService myDataService
+@inject NavigationManager myNavManager
 
 @code {
+
     Aufgabe meineAufgabe;
     List<Aufgabe> aufgabenListe;
+
     string fehlermeldung = string.Empty;
 
     // Das wird immer ausgeführt wenn die Seite geladen wird
@@ -105,5 +118,27 @@
     {
         myDataService.DeleteAufgabe(toDeleteAufgabe);
         this.aufgabenListe = myDataService.GetAufgaben();
+    }
+
+    private void ViewAufgabe(Aufgabe myAufgabe)
+    {
+        this.myNavManager.NavigateTo("/detail/" + myAufgabe.Id);
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles())
+        {
+            using var memoryStream = new MemoryStream();
+            await file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024).CopyToAsync(memoryStream);
+
+            Bild neuesBild = new Bild();
+
+            neuesBild.Name = file.Name;
+            neuesBild.ContentType = file.ContentType;
+            neuesBild.Data = memoryStream.ToArray();
+
+            this.meineAufgabe.Bild = neuesBild;
+        }
     }
 }

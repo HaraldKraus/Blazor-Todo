@@ -1,0 +1,70 @@
+﻿@page "/detail/{AufgabenID}"
+
+<h3>Aufgaben Detail</h3>
+
+@if (this._aufgabenID <= 0 || this.meineAufgabe == null)
+{
+    <p>Fehler: Konnte Aufgabe nicht laden.</p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-5 pt-4">
+            <div class="border rounded p-4">
+                <EditForm Model="@meineAufgabe" OnValidSubmit="AufgabeBearbeiten">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary /> 
+
+                    <div class="form-group row mb-3">
+                        <label class="col-sm-3 col-form-label" for="name">Name:</label>
+                        <div class="col-sm-9">
+                            <InputText id="name" @bind-Value="meineAufgabe.Name" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-3">
+                        <label class="col-sm-3 col-form-label" for="prio">Priorität:</label>
+                        <div class="col-sm-9">
+                            <select class="form-select" id="prio" name="prio" @bind="meineAufgabe.Prioritaet">
+                                <option value="2">High</option>
+                                <option value="1">Medium</option>
+                                <option value="0">Low</option>
+                            </select>
+                        </div>
+                    </div>             
+
+                    <button class="btn btn-primary" type="submit">Speichern</button>
+
+                </EditForm>
+            </div>
+        </div>
+    </div>
+}
+
+@inject DataService myDataService
+
+@code {
+    private int _aufgabenID = 0;
+
+    Aufgabe meineAufgabe;
+
+    [Parameter]
+    public string AufgabenID
+    {
+        get { return _aufgabenID.ToString(); }
+        set { Int32.TryParse(value, out _aufgabenID); }
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if(_aufgabenID > 0)
+        {
+            this.meineAufgabe = myDataService.GetAufgabe(_aufgabenID);
+        }
+    }
+
+    private void AufgabeBearbeiten()
+    {
+
+    }
+}

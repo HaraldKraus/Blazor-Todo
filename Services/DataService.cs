@@ -34,6 +34,18 @@ namespace TestBlazorAPP.Services
         }
 
         /// <summary>
+        /// Holt die Aufgabe mit der übergebenen ID
+        /// </summary>
+        /// <param name="id">Der Primärschlüssel der Aufgabe</param>
+        /// <returns>Eine Aufgabe oder null</returns>
+        public Aufgabe GetAufgabe(int id)
+        {
+            AppDBContext dbConnection = this._dbContextFactory.CreateDbContext();
+
+            return dbConnection.Aufgabe.Find(id);
+        }
+
+        /// <summary>
         /// Holt alle gelöschten Aufgaben aus der Datenbank
         /// </summary>
         /// <returns>Eine Liste von Aufgaben die gelöscht wurden</returns>
