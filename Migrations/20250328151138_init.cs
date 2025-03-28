@@ -14,22 +14,6 @@ namespace TestBlazorAPP.Migrations
                 name: "ToDo");
 
             migrationBuilder.CreateTable(
-                name: "Bild",
-                schema: "ToDo",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Data = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    ContentType = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Bild", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Aufgabe",
                 schema: "ToDo",
                 columns: table => new
@@ -38,42 +22,59 @@ namespace TestBlazorAPP.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Prioritaet = table.Column<int>(type: "int", nullable: false),
-                    Geloescht = table.Column<bool>(type: "bit", nullable: false),
-                    BildId = table.Column<int>(type: "int", nullable: true)
+                    Geloescht = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Aufgabe", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Bild",
+                schema: "ToDo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Data = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    ContentType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AufgabeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bild", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Aufgabe_Bild_BildId",
-                        column: x => x.BildId,
+                        name: "FK_Bild_Aufgabe_AufgabeId",
+                        column: x => x.AufgabeId,
                         principalSchema: "ToDo",
-                        principalTable: "Bild",
+                        principalTable: "Aufgabe",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
                 schema: "ToDo",
                 table: "Aufgabe",
-                columns: new[] { "Id", "BildId", "Geloescht", "Name", "Prioritaet" },
-                values: new object[] { 1, null, false, "Testaufgabe", 1 });
+                columns: new[] { "Id", "Geloescht", "Name", "Prioritaet" },
+                values: new object[] { 1, false, "Testaufgabe", 1 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Aufgabe_BildId",
+                name: "IX_Bild_AufgabeId",
                 schema: "ToDo",
-                table: "Aufgabe",
-                column: "BildId");
+                table: "Bild",
+                column: "AufgabeId",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Aufgabe",
+                name: "Bild",
                 schema: "ToDo");
 
             migrationBuilder.DropTable(
-                name: "Bild",
+                name: "Aufgabe",
                 schema: "ToDo");
         }
     }

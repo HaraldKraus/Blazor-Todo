@@ -30,9 +30,6 @@ namespace TestBlazorAPP.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("BildId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("Geloescht")
                         .HasColumnType("bit");
 
@@ -44,8 +41,6 @@ namespace TestBlazorAPP.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BildId");
 
                     b.ToTable("Aufgabe", "ToDo");
 
@@ -67,6 +62,9 @@ namespace TestBlazorAPP.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AufgabeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ContentType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -81,15 +79,25 @@ namespace TestBlazorAPP.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AufgabeId")
+                        .IsUnique();
+
                     b.ToTable("Bild", "ToDo");
+                });
+
+            modelBuilder.Entity("TestBlazorAPP.Models.Bild", b =>
+                {
+                    b.HasOne("TestBlazorAPP.Models.Aufgabe", "Aufgabe")
+                        .WithOne("Bild")
+                        .HasForeignKey("TestBlazorAPP.Models.Bild", "AufgabeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Aufgabe");
                 });
 
             modelBuilder.Entity("TestBlazorAPP.Models.Aufgabe", b =>
                 {
-                    b.HasOne("TestBlazorAPP.Models.Bild", "Bild")
-                        .WithMany()
-                        .HasForeignKey("BildId");
-
                     b.Navigation("Bild");
                 });
 #pragma warning restore 612, 618

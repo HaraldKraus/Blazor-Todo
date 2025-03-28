@@ -13,8 +13,7 @@ namespace TestBlazorAPP.Models
         public bool Geloescht { get; set; } = false;
 
         // Fremdschlüsssel
-        public virtual Bild? Bild { get; set; }
-        public int? BildId { get; set; }
+        public Bild? Bild { get; set; }
 
         public string schoenePrio()
         {

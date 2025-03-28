@@ -6,5 +6,9 @@
         public string Name { get; set; }
         public byte[] Data { get; set; }
         public string ContentType { get; set; }
+
+        // Foreign Keys
+        public int AufgabeId { get; set; }
+        public Aufgabe Aufgabe { get; set; }
     }
 }
