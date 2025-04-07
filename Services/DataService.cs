@@ -42,7 +42,7 @@ namespace TestBlazorAPP.Services
         {
             AppDBContext dbConnection = this._dbContextFactory.CreateDbContext();
 
-            return dbConnection.Aufgabe.Find(id);
+            return dbConnection.Aufgabe.Include(a => a.Bild).Where(a => a.Id == id).SingleOrDefault();
         }
 
         /// <summary>
@@ -98,6 +98,17 @@ namespace TestBlazorAPP.Services
 
             dbConnection.Entry(aufgabe).State = EntityState.Modified;
 
+            dbConnection.SaveChanges();
+        }
+
+        public void UpdateAufgabe(Aufgabe aufgabe)
+        {
+            AppDBContext dbConnection = this._dbContextFactory.CreateDbContext();
+
+            dbConnection.Attach(aufgabe);
+            dbConnection.Entry(aufgabe).State = EntityState.Modified;
+
+            dbConnection.Update(aufgabe);
             dbConnection.SaveChanges();
         }
     }

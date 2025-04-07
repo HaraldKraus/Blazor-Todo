@@ -38,15 +38,30 @@ else
                 </EditForm>
             </div>
         </div>
+
+        <div class="col-md-2 pt-4">
+            @if (imageSource == string.Empty)
+            {
+                <!--<Image Src="placeholder.jpg" IsThumbnail="true" Alt="placeholder" />-->
+            }
+            else
+            {
+                <Image Src="@imageSource" IsThumbnail="true" Alt="placeholder" />
+            }
+        </div>
     </div>
 }
+
+<Toasts class="p-3" Messages="messages" AutoHide="true" Delay="6000" Placement="ToastsPlacement.TopRight" />
 
 @inject DataService myDataService
 
 @code {
     private int _aufgabenID = 0;
+    private string imageSource = string.Empty;
 
     Aufgabe meineAufgabe;
+    List<ToastMessage> messages = new List<ToastMessage>();
 
     [Parameter]
     public string AufgabenID
@@ -60,11 +75,26 @@ else
         if(_aufgabenID > 0)
         {
             this.meineAufgabe = myDataService.GetAufgabe(_aufgabenID);
+
+            if (meineAufgabe.Bild != null)
+            {
+                imageSource = $"data:{meineAufgabe.Bild.ContentType};base64,{Convert.ToBase64String(meineAufgabe.Bild.Data)}";
+            }
         }
     }
 
     private void AufgabeBearbeiten()
     {
+        myDataService.UpdateAufgabe(this.meineAufgabe);
 
+        ToastMessage msg = new ToastMessage
+            {
+                Type = ToastType.Success,
+                Title = "Aufgabe aktualisiert",
+                HelpText = $"{DateTime.Now}",
+                Message = $"Die Aufgabe wurde erfolgreich aktualisiert.",
+            };
+
+        messages.Add(msg);
     }
 }
