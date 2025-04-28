@@ -9,7 +9,20 @@
 
     <main>
         <div class="top-row px-4">
+
+            <AuthorizeView>
+                <Authorized>
+                    <span>Angemeldet als </span>
+                </Authorized>
+
+                <NotAuthorized>
+                    <span>Nicht angemeldet</span>
+                </NotAuthorized>
+            </AuthorizeView>
+
+            <!--
             <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">Hallo</a>
+            -->
         </div>
 
         <article class="content px-4">
@@ -37,6 +50,8 @@
     {
         navItems = new List<NavItem>
         {
+            new NavItem { Href = "/auth/register", IconName = IconName.PersonAdd, Text = "Registrieren"},
+
             new NavItem { Href = "/todo", IconName = IconName.CardChecklist, Text = "Aufgaben"},
             new NavItem { Href = "/papierkorb", IconName = IconName.Trash, Text = "Mistkübel"},
         };

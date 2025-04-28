@@ -111,5 +111,27 @@ namespace TestBlazorAPP.Services
             dbConnection.Update(aufgabe);
             dbConnection.SaveChanges();
         }
+
+        /// <summary>
+        /// Fügt einen neuen Benutzer der Datenbank hinzu
+        /// </summary>
+        /// <param name="benutzer">Das Benutzerobjekt das gespeichert werden soll</param>
+        /// <returns>True wenn erfolgreich / False wenn nicht erfolgreich</returns>
+        public bool AddBenutzer(Benutzer benutzer)
+        {
+            AppDBContext dbConnection = this._dbContextFactory.CreateDbContext();
+
+            if (dbConnection.Benutzer.Where(t => t.Username == benutzer.Username).Count() == 0)
+            {
+                dbConnection.Benutzer.Add(benutzer);
+                dbConnection.SaveChanges();
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

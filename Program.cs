@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using TestBlazorAPP.Components;
 using TestBlazorAPP.Database;
@@ -22,6 +23,12 @@ namespace TestBlazorAPP
             builder.Services.AddDbContextFactory<AppDBContext>(options =>
                 //options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnectionString")));
                 options.UseSqlServer(builder.Configuration.GetConnectionString("AzureConnectionString")));
+
+            // Authentication
+            builder.Services.AddScoped<TodoAuthenticationStateProvider>();
+            builder.Services.AddScoped<AuthenticationStateProvider>
+                (sp => sp.GetRequiredService<TodoAuthenticationStateProvider>());
+            builder.Services.AddAuthorizationCore();
 
             // Add services to the container.
             builder.Services.AddRazorComponents()

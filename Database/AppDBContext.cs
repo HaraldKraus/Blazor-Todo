@@ -44,5 +44,6 @@ namespace TestBlazorAPP.Database
 
         public DbSet<Aufgabe> Aufgabe { get; set; }
         public DbSet<Bild> Bild { get; set; }
+        public DbSet<Benutzer> Benutzer { get; set; }
     }
 }
